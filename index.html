@@ -90,6 +90,7 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             margin-bottom: 2rem;
             transition: transform 0.3s ease;
+            position: relative;
         }
         .post:hover {
             transform: translateY(-5px);
@@ -106,6 +107,33 @@
             font-size: 0.9rem;
             margin-bottom: 1rem;
             font-style: italic;
+        }
+        .post-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .post-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .edit-btn {
+            background-color: #8d6e63;
+            color: white;
+        }
+        .edit-btn:hover {
+            background-color: #6d4c41;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
         }
         .sidebar {
             background: white;
@@ -134,6 +162,23 @@
             color: #3e2723;
             text-decoration: underline;
         }
+        .add-post-btn {
+            display: block;
+            width: 100%;
+            background-color: #5d4037;
+            color: white;
+            text-align: center;
+            padding: 0.8rem;
+            border-radius: 5px;
+            margin-top: 1.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .add-post-btn:hover {
+            background-color: #3e2723;
+            color: white;
+            text-decoration: none;
+        }
         footer {
             background: #3e2723;
             color: #fff8e1;
@@ -141,9 +186,108 @@
             padding: 2rem 0;
             margin-top: 3rem;
         }
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            display: none;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #f5f5f5;
+            padding-bottom: 0.8rem;
+        }
+        .modal-header h3 {
+            color: #3e2723;
+            margin: 0;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #795548;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #3e2723;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .cancel-btn {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .cancel-btn:hover {
+            background-color: #d0d0d0;
+        }
+        .submit-btn {
+            background-color: #5d4037;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #3e2723;
+        }
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
+            }
+            .post-actions {
+                flex-direction: column;
+            }
+            .modal-content {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -167,29 +311,14 @@
         </header>
 
         <div class="container">
-            <main>
-                <article class="post">
-                    <h2>今日立冬，天气渐凉，注意保暖哦</h2>
-                    <div class="post-meta">唠叨多了，有时也会怕你嫌我烦</div>
-                    <p>早睡早起好身体！吃饱吃好，锻炼身体！</p>
-                    <p>放下道德素质，享受快乐人生</p>
-                    <p>来日方长，别着急，我陪着你呢</p>
-                </article>
-
-                <article class="post">
-                    <h2>小小的文青，嘿嘿</h2>
-                    <div class="post-meta">心如花木，向阳而生</div>
-                    <p>愿我如星君如月，夜夜流光相皎洁。月暂晦，星常明。留明待月复，三五共盈盈。</p>
-                    <p>山有木兮木有枝，心悦卿兮卿可知。</p>
-                    <p>昨夜星辰昨夜风，画楼西畔桂堂东。</p>
-                    <p>有种梦到哪句说哪句的感觉，打完自己都有点不好意思了，嘿嘿</p>
-                </article>
-                
+            <main id="postsContainer">
+                <!-- 文章会通过JS动态渲染 -->
             </main>
 
             <aside class="sidebar">
                 <h3>致你</h3>
                 <p>总有些人，一眼看到就会心生好感，道理是讲不通的</p>
+                <a href="javascript:openAddModal()" class="add-post-btn">新增文章</a>
             </aside>
         </div>
 
@@ -198,21 +327,101 @@
         </footer>
     </div>
 
+    <!-- 新增/编辑文章弹窗 -->
+    <div class="modal" id="postModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">新增文章</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="postForm">
+                <input type="hidden" id="postId">
+                <div class="form-group">
+                    <label for="postTitle">文章标题</label>
+                    <input type="text" id="postTitle" required placeholder="请输入文章标题">
+                </div>
+                <div class="form-group">
+                    <label for="postMeta">备注信息</label>
+                    <input type="text" id="postMeta" placeholder="例如：发布时间、心情备注等">
+                </div>
+                <div class="form-group">
+                    <label for="postContent">文章内容</label>
+                    <textarea id="postContent" required placeholder="请输入文章内容，换行分隔段落"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" onclick="closeModal()">取消</button>
+                    <button type="submit" class="submit-btn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // 初始化文章数据（localStorage）
+        function initPosts() {
+            const posts = localStorage.getItem('wanglanPosts');
+            if (!posts) {
+                // 初始默认文章
+                const defaultPosts = [
+                    {
+                        id: Date.now() - 100000,
+                        title: '今日立冬，天气渐凉，注意保暖哦',
+                        meta: '唠叨多了，有时也会怕你嫌我烦',
+                        content: ['早睡早起好身体！吃饱吃好，锻炼身体！', '放下道德素质，享受快乐人生', '来日方长，别着急，我陪着你呢']
+                    },
+                    {
+                        id: Date.now() - 50000,
+                        title: '小小的文青，嘿嘿',
+                        meta: '心如花木，向阳而生',
+                        content: [
+                            '愿我如星君如月，夜夜流光相皎洁。月暂晦，星常明。留明待月复，三五共盈盈。',
+                            '山有木兮木有枝，心悦卿兮卿可知。',
+                            '昨夜星辰昨夜风，画楼西畔桂堂东。',
+                            '有种梦到哪句说哪句的感觉，打完自己都有点不好意思了，嘿嘿'
+                        ]
+                    }
+                ];
+                localStorage.setItem('wanglanPosts', JSON.stringify(defaultPosts));
+                return defaultPosts;
+            }
+            return JSON.parse(posts);
+        }
+
+        // 渲染文章列表
+        function renderPosts() {
+            const posts = initPosts();
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('article');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <div class="post-meta">${post.meta || '无备注'}</div>
+                    <div class="post-content">
+                        ${post.content.map(paragraph => `<p>${paragraph}</p>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-btn edit-btn" onclick="openEditModal(${post.id})">编辑</button>
+                        <button class="post-btn delete-btn" onclick="deletePost(${post.id})">删除</button>
+                    </div>
+                `;
+                container.appendChild(postElement);
+            });
+        }
+
         // 密码验证函数
         function checkPassword() {
             const password = document.getElementById('passwordInput').value;
             const errorMessage = document.getElementById('errorMessage');
             
-            // 验证密码是否正确
             if (password === 'lan040204') {
-                // 隐藏密码锁，显示内容
                 document.getElementById('passwordLock').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
+                renderPosts(); // 解锁后渲染文章
             } else {
-                // 显示错误信息
                 errorMessage.style.display = 'block';
-                // 3秒后隐藏错误信息
                 setTimeout(() => {
                     errorMessage.style.display = 'none';
                 }, 3000);
@@ -223,6 +432,91 @@
         document.getElementById('passwordInput').addEventListener('keyup', function(event) {
             if (event.key === 'Enter') {
                 checkPassword();
+            }
+        });
+
+        // 打开新增文章弹窗
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = '新增文章';
+            document.getElementById('postId').value = '';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postMeta').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postModal').style.display = 'flex';
+        }
+
+        // 打开编辑文章弹窗
+        function openEditModal(id) {
+            const posts = initPosts();
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            
+            document.getElementById('modalTitle').textContent = '编辑文章';
+            document.getElementById('postId').value = post.id;
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postMeta').value = post.meta || '';
+            document.getElementById('postContent').value = post.content.join('\n');
+            document.getElementById('postModal').style.display = 'flex';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        // 提交文章（新增/编辑）
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('postId').value;
+            const title = document.getElementById('postTitle').value.trim();
+            const meta = document.getElementById('postMeta').value.trim();
+            const content = document.getElementById('postContent').value.trim().split('\n').filter(line => line);
+            
+            if (!title || content.length === 0) {
+                alert('标题和内容不能为空');
+                return;
+            }
+
+            const posts = initPosts();
+            if (id) {
+                // 编辑模式
+                const index = posts.findIndex(p => p.id === Number(id));
+                posts[index] = {
+                    id: Number(id),
+                    title,
+                    meta,
+                    content
+                };
+            } else {
+                // 新增模式
+                posts.push({
+                    id: Date.now(),
+                    title,
+                    meta,
+                    content
+                });
+            }
+
+            localStorage.setItem('wanglanPosts', JSON.stringify(posts));
+            closeModal();
+            renderPosts(); // 重新渲染列表
+        });
+
+        // 删除文章
+        function deletePost(id) {
+            if (confirm('确定要删除这篇文章吗？')) {
+                const posts = initPosts();
+                const filteredPosts = posts.filter(p => p.id !== id);
+                localStorage.setItem('wanglanPosts', JSON.stringify(filteredPosts));
+                renderPosts(); // 重新渲染列表
+            }
+        }
+
+        // 点击弹窗外部关闭弹窗
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('postModal');
+            if (e.target === modal) {
+                closeModal();
             }
         });
     </script>
